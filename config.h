@@ -30,3 +30,9 @@
 // Zeitüberschreitung für Daten (in Millisekunden)
 // Wenn nach 5 Sekunden nichts kommt, zeigen wir "Offline"
 #define DATA_TIMEOUT 5000
+
+// Buttons gegen GND geschaltet
+#define BTN_NEXT_VIEW 4  // GPIO 4
+#define BTN_ACTION    5  // GPIO 5
+#define BTN_UP        6  // GPIO 6
+#define BTN_DOWN      7  // GPIO 7
