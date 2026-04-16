@@ -59,6 +59,7 @@ void DisplayManager::drawHeader(const char *title, float temp)
 void DisplayManager::showWelcome()
 {
     _u8g2.clearBuffer();
+
     // _u8g2.drawFrame(0, 0, 128, 64);
     _u8g2.drawXBMP(12, 10, 103, 21, openeremise_logo_103_21);
 
@@ -72,6 +73,8 @@ void DisplayManager::showWelcome()
 
 void DisplayManager::showOverview(const JsonDocument &data)
 {
+    _u8g2.clearBuffer();
+
     if (data.containsKey("temperature"))
     {
         float currentTemp = data["temperature"] | 0.0f;
@@ -153,7 +156,7 @@ void DisplayManager::showNetworkStatus(const JsonDocument &data)
 
     _u8g2.drawUTF8(0, 37, "mDNS:");
     String mdnsName = data["mdns"] | "---";
-    if (mdnsName != "---")
+    if (mdnsName != "---" && mdnsName != "")
         mdnsName += ".local";
     _u8g2.drawUTF8(35, 37, mdnsName.c_str());
 
@@ -173,7 +176,8 @@ void DisplayManager::showNetworkStatus(const JsonDocument &data)
 void DisplayManager::showError(const JsonDocument &data)
 {
     _u8g2.clearBuffer();
-    drawHeader("!!! ERROR !!!");
+
+    drawHeader("ERROR");
 
     _u8g2.setFont(u8g2_font_helvR08_tf);
     _u8g2.drawUTF8(0, 28, "CODE:");
@@ -189,7 +193,7 @@ void DisplayManager::showError(const JsonDocument &data)
 void DisplayManager::draw(const JsonDocument &data)
 {
     _u8g2.clearBuffer();
-
+    
     if (data.containsKey("error_msg"))
     {
         showError(data);
@@ -204,6 +208,9 @@ void DisplayManager::draw(const JsonDocument &data)
     // Priorität 2: Normale Navigation (0-3)
     switch (_currentView)
     {
+    case 0:
+        showNetworkStatus(data);
+        break;
     case 1:
         showOverview(data);
         break;

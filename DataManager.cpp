@@ -8,7 +8,7 @@ bool DataManager::update() {
     if (Serial.available() > 0) {
         // Wir versuchen das JSON direkt aus dem Stream zu lesen
         DeserializationError error = deserializeJson(_doc, Serial);
-
+        
         if (error == DeserializationError::Ok) {
             _newDataAvailable = true;
             return true;
