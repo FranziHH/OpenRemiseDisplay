@@ -9,6 +9,13 @@
 
 class DisplayManager {
 private:
+    enum class wifi_status : uint8_t {
+        DISCONNECTED,
+        STA_CONNECTED,
+        AP_ACTIVE,
+        AP_CONNECTED
+    };
+
     int _currentView = 0; 
     bool _blinkState = false;
     unsigned long _lastBlinkTime = 0;
@@ -25,9 +32,9 @@ private:
 
     // Private Zeichen-Methoden (Interne Helfer)
     void drawHeader(const char* viewName);
+    void drawHeader(const char* viewName, float temp);
     void showOverview(const JsonDocument& data);
     void showNetworkStatus(const JsonDocument& data);
-    void showError(const JsonDocument& data);
 
 public:
     DisplayManager();
@@ -35,5 +42,6 @@ public:
     void nextView();
     void drawImage(const unsigned char* bitmap, int w, int h);
     void showWelcome();
+    void showError(const JsonDocument& data);
     void draw(const JsonDocument& data);
 };

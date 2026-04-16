@@ -36,3 +36,5 @@
 #define BTN_ACTION    5  // GPIO 5
 #define BTN_UP        6  // GPIO 6
 #define BTN_DOWN      7  // GPIO 7
+
+#define VIEW_INTERVAL 10 // Next View after Seconds, 0 = Disable

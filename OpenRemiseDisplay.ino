@@ -46,12 +46,15 @@ void setup()
   // Einfacher Aufruf dank deiner Klasse:
   // display.drawImage(openeremise_logo_48_48, 48, 48);
   display.showWelcome();
-  
 }
 
 void loop()
 {
   bool updateNeeded = false;
+  static bool isJson = false;
+  static bool dataTimeout = false;
+  static unsigned long lastViewChange = 0;
+  static unsigned long lastDataReceived = 0;
 
   if (btnNext.isPressed())
   {
@@ -59,14 +62,45 @@ void loop()
     updateNeeded = true;
   }
 
+  if (dataHandler.update())
+  {
+    isJson = true;
+    updateNeeded = true;
+    lastDataReceived = millis(); // Zeitstempel aktualisieren
+    dataTimeout = false;         // Timeout aufheben, falls aktiv
+  }
+
+  if (isJson && !dataTimeout && (millis() - lastDataReceived >= DATA_TIMEOUT))
+  {
+    dataTimeout = true;
+    updateNeeded = true;
+    isJson = false;
+  }
+
+  if (isJson && VIEW_INTERVAL != 0 && millis() - lastViewChange >= (VIEW_INTERVAL * 1000))
+  {
+    display.nextView();
+    updateNeeded = true;
+    lastViewChange = millis();
+  }
+
   if (btnAction.isPressed())
   {
     // Tu etwas in der aktuellen Ansicht
   }
 
-  if (dataHandler.update() || updateNeeded)
+  if (updateNeeded)
   {
-    // Display nur aktualisieren, wenn neue Daten da sind
-    display.draw(dataHandler.getData());
+    if (dataTimeout)
+    {
+      JsonDocument errorData; 
+      errorData["error_code"] = 404;
+      errorData["error_msg"] = "TIMEOUT";
+      display.showError(errorData);
+    }
+    else
+    {
+      display.draw(dataHandler.getData());
+    }
   }
 }
