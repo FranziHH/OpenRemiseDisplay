@@ -55,19 +55,19 @@ void DisplayManager::showOverview(const JsonDocument& data) {
 
     _u8g2.setFont(u8g2_font_helvR08_tf);
     
-    _u8g2.drawUTF8(0, 28, "Voltage:");
-    _u8g2.setCursor(50, 28);
+    _u8g2.drawUTF8(0, 25, "Voltage:");
+    _u8g2.setCursor(50, 25);
     _u8g2.printf("%.2f V", (data["voltage"] | 0) / 1000.0);
 
-    _u8g2.drawUTF8(0, 40, "Current:");
-    _u8g2.setCursor(50, 40);
+    _u8g2.drawUTF8(0, 37, "Current:");
+    _u8g2.setCursor(50, 37);
     _u8g2.printf("%d mA", data["current"] | 0);
 
-    _u8g2.drawUTF8(0, 52, "State:");
-    _u8g2.drawUTF8(50, 52, data["state"] | "---");
+    _u8g2.drawUTF8(0, 49, "State:");
+    _u8g2.drawUTF8(50, 49, data["state"] | "---");
 
-    _u8g2.drawUTF8(0, 64, "Version:");
-    _u8g2.drawUTF8(50, 64, data["version"] | "x.x.x");
+    _u8g2.drawUTF8(0, 61, "Version:");
+    _u8g2.drawUTF8(50, 61, data["version"] | "x.x.x");
     
     _u8g2.sendBuffer();
 }
@@ -77,19 +77,19 @@ void DisplayManager::showNetworkStatus(const JsonDocument& data) {
 
     _u8g2.setFont(u8g2_font_helvR08_tf);
     
-    _u8g2.drawUTF8(0, 28, "IP:");
-    _u8g2.drawUTF8(35, 28, data["ip"] | "0.0.0.0");
+    _u8g2.drawUTF8(0, 25, "IP:");
+    _u8g2.drawUTF8(35, 25, data["ip"] | "0.0.0.0");
 
-    _u8g2.drawUTF8(0, 40, "mDNS:");
+    _u8g2.drawUTF8(0, 37, "mDNS:");
     String mdnsName = data["mdns"] | "---"; 
     if (mdnsName != "---") mdnsName += ".local";
-    _u8g2.drawUTF8(35, 40, mdnsName.c_str());
+    _u8g2.drawUTF8(35, 37, mdnsName.c_str());
 
-    _u8g2.drawUTF8(0, 52, "SSID:");
-    _u8g2.drawUTF8(35, 52, data["ssid"] | "---");
+    _u8g2.drawUTF8(0, 49, "SSID:");
+    _u8g2.drawUTF8(35, 49, data["ssid"] | "---");
 
-    _u8g2.drawUTF8(0, 64, "RSSI:");
-    _u8g2.setCursor(35, 64);
+    _u8g2.drawUTF8(0, 61, "RSSI:");
+    _u8g2.setCursor(35, 61);
     _u8g2.printf("%d dBm", data["rssi"] | 0);
 
     _u8g2.sendBuffer();
