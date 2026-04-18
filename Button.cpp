@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "Button.hpp"
 
 Button::Button(uint8_t pin) 
     : _pin(pin), _lastState(HIGH), _lastDebounceTime(0), _debounceDelay(50) {

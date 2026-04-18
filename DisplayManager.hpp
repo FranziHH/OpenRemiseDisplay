@@ -2,8 +2,8 @@
 
 #include <ArduinoJson.h>
 #include <U8g2lib.h>
-#include "config.h"
-#include "Logo.h"
+#include "config.hpp"
+#include "Logo.hpp"
 
 #define MAX_VIEWS 2
 
@@ -16,10 +16,8 @@ private:
         AP_CONNECTED
     };
 
-    int _currentView = 0; 
-    bool _blinkState = false;
-    unsigned long _lastBlinkTime = 0;
-    const uint16_t BLINK_INTERVAL = 500;
+    int _currentView = 0;
+    unsigned long lastModalTimeOut = millis();
 
     // Display-Treiber Auswahl
     #if defined(USE_SSD1306)
@@ -37,11 +35,13 @@ private:
     void showNetworkStatus(const JsonDocument& data);
 
 public:
+    bool modal = true;
+    bool dataTimeout = false;   // no Data
     DisplayManager();
     void begin();
     void nextView();
     void drawImage(const unsigned char* bitmap, int w, int h);
-    void showWelcome();
+    void showMessage(const char *title, const char *line1, const char *line2);
     void showError(const JsonDocument& data);
     void draw(const JsonDocument& data);
 };

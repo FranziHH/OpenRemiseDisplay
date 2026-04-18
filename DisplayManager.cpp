@@ -1,4 +1,4 @@
-#include "DisplayManager.h"
+#include "DisplayManager.hpp"
 
 /*
 ToDo: Data
@@ -56,17 +56,33 @@ void DisplayManager::drawHeader(const char *title, float temp)
     _u8g2.drawHLine(0, 13, SCREEN_WIDTH);
 }
 
-void DisplayManager::showWelcome()
+void DisplayManager::showMessage(const char *title, const char *line1, const char *line2)
 {
     _u8g2.clearBuffer();
-
-    // _u8g2.drawFrame(0, 0, 128, 64);
-    _u8g2.drawXBMP(12, 10, 103, 21, openeremise_logo_103_21);
-
     _u8g2.setFont(u8g2_font_6x12_tf);
-    const char *msg = "waiting for data ...";
-    int x = (128 - _u8g2.getStrWidth(msg)) / 2;
-    _u8g2.drawUTF8(x, 50, msg);
+
+    if (title == "")
+    {
+        _u8g2.drawXBMP(12, 5, 103, 21, openeremise_logo_103_21);
+    }
+    else
+    {
+        int x = (128 - _u8g2.getStrWidth(title)) / 2;
+        _u8g2.drawUTF8(x, 40, title);
+    }
+
+    if (line1 != "")
+    {
+
+        int x = (128 - _u8g2.getStrWidth(line1)) / 2;
+        _u8g2.drawUTF8(x, 40, line1);
+    }
+
+    if (line2 != "")
+    {
+        int x = (128 - _u8g2.getStrWidth(line2)) / 2;
+        _u8g2.drawUTF8(x, 57, line2);
+    }
 
     _u8g2.sendBuffer();
 }
@@ -190,14 +206,73 @@ void DisplayManager::showError(const JsonDocument &data)
     _u8g2.sendBuffer();
 }
 
+/*
+Es gibt ein Timeout für bestimmte Nachrichten
+Wie Reboot oder Error
+die nicht durch andere Nachrichten in dieser
+Zeit überschrieben werden dürfen
+*/
 void DisplayManager::draw(const JsonDocument &data)
 {
+    // im Moment 5 Sekunden fix
+    if (millis() - lastModalTimeOut < MODAL_TIMEOUT) return;
+
     _u8g2.clearBuffer();
-    
+    modal = false;
+
     if (data.containsKey("error_msg"))
     {
         showError(data);
+        lastModalTimeOut = millis();
+        modal = true;
         return;
+    }
+    
+    /* 
+    // idee war den Reset Button abzufangen,
+    // das fkt aber nicht wie gewünscht
+    bool isMissingData = (data["ip"].isNull() || data["ip"] == "") && 
+                         (data["mdns"].isNull() || data["mdns"] == "");
+    if (dataTimeout || isMissingData)
+    */
+    if (dataTimeout)
+    {
+        showMessage("", "Data Connection Lost", "waiting for data ...");   // show logo
+        lastModalTimeOut = millis();
+        modal = true;
+        return;
+    }
+
+    if (data.containsKey("is_restarting"))
+    {
+        bool restart = data["is_restarting"].as<bool>();
+        if (restart) {
+            showMessage("", "Restart", "");   // show logo
+            lastModalTimeOut = millis();
+            modal = true;
+            return;
+        }
+    }
+
+    if (data.containsKey("wifi_status"))
+    {
+        // erweiterung Status ETH/WIFI vorhanden
+        auto status = static_cast<wifi_status>(data["wifi_status"].as<uint8_t>());
+
+        if (status == wifi_status::AP_ACTIVE)
+        {
+            // Logik für Access Point
+            showMessage("", "Access Point", "is Active");   // show logo
+            modal = true;
+            return;
+        }
+        else if (status == wifi_status::AP_CONNECTED)
+        {
+            // Logik für Access Point
+            showMessage("", "Access Point", "Client connected");   // show logo
+            modal = true;
+            return;
+        }
     }
 
     if (_currentView < 0 || _currentView >= MAX_VIEWS)

@@ -1,4 +1,4 @@
-#include "DataManager.h"
+#include "DataManager.hpp"
 
 DataManager::DataManager() : _newDataAvailable(false) {
     // Falls nötig, hier Vorbelegung des Dokuments

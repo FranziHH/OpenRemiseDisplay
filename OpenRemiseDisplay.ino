@@ -3,11 +3,11 @@
  **************************************************************************************/
 
 #include <Arduino.h>
-#include "config.h"
-#include "Button.h"
-#include "DisplayManager.h"
-#include "DataManager.h"
-#include "Logo.h"
+#include "config.hpp"
+#include "Button.hpp"
+#include "DisplayManager.hpp"
+#include "DataManager.hpp"
+#include "Logo.hpp"
 #include <U8g2lib.h>
 #include <Wire.h>
 #include <ArduinoJson.h>
@@ -18,7 +18,7 @@
 DisplayManager display;
 DataManager dataHandler;
 
-// Buttons instanziieren (Pins aus config.h)
+// Buttons instanziieren (Pins aus config.hpp)
 Button btnNext(BTN_NEXT_VIEW);
 Button btnAction(BTN_ACTION);
 
@@ -42,24 +42,28 @@ void setup()
   btnAction.begin();
 
   display.begin();
-
-  // Einfacher Aufruf dank deiner Klasse:
-  // display.drawImage(openeremise_logo_48_48, 48, 48);
-  display.showWelcome();
+  display.showMessage("", "Booting", "waiting for data ...");  // Show Logo
 }
 
 void loop()
 {
   bool updateNeeded = false;
   static bool isJson = false;
-  static bool dataTimeout = false;
   static unsigned long lastViewChange = 0;
   static unsigned long lastDataReceived = 0;
 
-  if (btnNext.isPressed())
-  {
-    display.nextView();
-    updateNeeded = true;
+  if (!display.modal) {
+    if (btnNext.isPressed())
+    {
+      
+      display.nextView();
+      updateNeeded = true;
+    }
+
+    if (btnAction.isPressed())
+    {
+      // Tu etwas in der aktuellen Ansicht
+    }
   }
 
   if (dataHandler.update())
@@ -67,12 +71,12 @@ void loop()
     isJson = true;
     updateNeeded = true;
     lastDataReceived = millis(); // Zeitstempel aktualisieren
-    dataTimeout = false;         // Timeout aufheben, falls aktiv
+    display.dataTimeout = false;         // Timeout aufheben, falls aktiv
   }
 
-  if (isJson && !dataTimeout && (millis() - lastDataReceived >= DATA_TIMEOUT))
+  if (isJson && !display.dataTimeout && (millis() - lastDataReceived >= DATA_TIMEOUT))
   {
-    dataTimeout = true;
+    display.dataTimeout = true;
     updateNeeded = true;
     isJson = false;
   }
@@ -84,23 +88,8 @@ void loop()
     lastViewChange = millis();
   }
 
-  if (btnAction.isPressed())
-  {
-    // Tu etwas in der aktuellen Ansicht
-  }
-
   if (updateNeeded)
   {
-    if (dataTimeout)
-    {
-      JsonDocument errorData; 
-      errorData["error_code"] = 404;
-      errorData["error_msg"] = "TIMEOUT";
-      display.showError(errorData);
-    }
-    else
-    {
-      display.draw(dataHandler.getData());
-    }
+      display.draw(dataHandler.getData()); 
   }
 }

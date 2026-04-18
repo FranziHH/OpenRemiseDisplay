@@ -31,6 +31,9 @@
 // Wenn nach 5 Sekunden nichts kommt, zeigen wir "Offline"
 #define DATA_TIMEOUT 15000
 
+// nach Error / Restart / Connection Lost
+#define MODAL_TIMEOUT 10000
+
 // Buttons gegen GND geschaltet
 #define BTN_NEXT_VIEW 4  // GPIO 4
 #define BTN_ACTION    5  // GPIO 5

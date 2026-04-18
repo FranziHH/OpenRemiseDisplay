@@ -16,12 +16,19 @@ Current State: alpha
 ### Hardware Connection
 
     OLED VCC -> C3 3.3V
-
     OLED GND -> C3 GND
-
     OLED SDA -> C3 GPIO 8
-
     OLED SCL -> C3 GPIO 9
 
-    Datenquelle (S3) -> USB-Kabel an den C3 (oder RX/TX Kreuzverbindung)
+    RX/TX Kreuzverbindung
+    
+    Btn 1 -> GPIO 4
+    Btn 2 -> GPIO 5
+    Btn 3 -> GPIO 6
+    Btn 4 -> GPIO 7
+      |-- -> GND
+    
+    
+
+
     
