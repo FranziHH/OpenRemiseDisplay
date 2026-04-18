@@ -20,7 +20,7 @@ Current State: alpha
     OLED SDA -> C3 GPIO 8
     OLED SCL -> C3 GPIO 9
 
-    RX/TX Kreuzverbindung
+    RX/TX Cross connection
     
     Btn 1 -> GPIO 4
     Btn 2 -> GPIO 5
