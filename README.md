@@ -22,10 +22,10 @@ Current State: alpha
 
     RX/TX Cross connection
     
-    Btn 1 -> GPIO 4
-    Btn 2 -> GPIO 5
-    Btn 3 -> GPIO 6
-    Btn 4 -> GPIO 7
+    Btn 1 -> GPIO 4 Switch Views
+    Btn 2 -> GPIO 5 (currently not in use)
+    Btn 3 -> GPIO 6 (currently not in use)
+    Btn 4 -> GPIO 7 (currently not in use)
       |-- -> GND
     
     
