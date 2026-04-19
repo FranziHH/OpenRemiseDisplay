@@ -3,7 +3,7 @@
 
 Start Develop own OpenRemise Display
 
-Current State: alpha
+<a href="images/display/IMG_20260419_114529.jpg"><img src="images/display/IMG_20260419_114529.jpg" width="300" alt=""></a>
 
 ### Used Hardware
 
@@ -28,7 +28,58 @@ Current State: alpha
     Btn 4 -> GPIO 7 (currently not in use)
       |-- -> GND
     
-    
+## Original Data
 
+<table>
+  <tr>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_120004.jpg"><img src="images/display/IMG_20260419_120004.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_120010.jpg"><img src="images/display/IMG_20260419_120010.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_120041.jpg"><img src="images/display/IMG_20260419_120041.jpg" width="300" alt=""></a>
+    </td>
+  </tr>
+</table>
+
+### Extended Data
+
+<table>
+  <tr>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114633.jpg"><img src="images/display/IMG_20260419_114633.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114645.jpg"><img src="images/display/IMG_20260419_114645.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114746.jpg"><img src="images/display/IMG_20260419_114746.jpg" width="300" alt=""></a>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114826.jpg"><img src="images/display/IMG_20260419_114826.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114837.jpg"><img src="images/display/IMG_20260419_114837.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_115042.jpg"><img src="images/display/IMG_20260419_115042.jpg" width="300" alt=""></a>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114903.jpg"><img src="images/display/IMG_20260419_114903.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_114934.jpg"><img src="images/display/IMG_20260419_114934.jpg" width="300" alt=""></a>
+    </td>
+    <td valign="top">
+      <a href="images/display/IMG_20260419_115459.jpg"><img src="images/display/IMG_20260419_115459.jpg" width="300" alt=""></a>
+    </td>
+  </tr>
+</table>
 
     
