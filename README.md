@@ -39,7 +39,7 @@ Start Develop own OpenRemise Display
       <a href="images/display/IMG_20260419_120010.jpg"><img src="images/display/IMG_20260419_120010.jpg" width="300" alt=""></a>
     </td>
     <td valign="top">
-      <a href="images/display/IMG_20260419_120041.jpg"><img src="images/display/IMG_20260419_120041.jpg" width="300" alt=""></a>
+      <a href="images/display/IMG_20260419_120047.jpg"><img src="images/display/IMG_20260419_120047.jpg" width="300" alt=""></a>
     </td>
   </tr>
 </table>
