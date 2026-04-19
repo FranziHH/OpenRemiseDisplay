@@ -1,9 +1,14 @@
 # Use ESP32-C3-Super-Mini as OpenRemise Display
 
-
-Start Develop own OpenRemise Display
+### With a large 2.4" Display 
 
 <a href="images/display/IMG_20260419_114529.jpg"><img src="images/display/IMG_20260419_114529.jpg" width="500" alt=""></a>
+
+### Compact Version with 1.3" Display
+
+<a href="images/display/IMG_20260419_184033.jpg"><img src="images/display/IMG_20260419_184033.jpg" width="500" alt=""></a>
+
+The two reset buttons are connected here to reset the display synchronously.
 
 ### Used Hardware
 

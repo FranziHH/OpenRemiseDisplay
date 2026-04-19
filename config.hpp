@@ -4,9 +4,9 @@
 
 // --- DISPLAY TYP WÄHLEN ---
 // Kommentiere aus, was du NICHT verwendest
-//#define USE_SSD1306
-//#define USE_SH1106
-#define USE_SSD1309
+// #define USE_SSD1306 // 0,96 ''
+// #define USE_SH1106 // 1,3 ''
+#define USE_SSD1309 // 2,4 ''
 
 // Display Dimensionen
 #define SCREEN_WIDTH 128
