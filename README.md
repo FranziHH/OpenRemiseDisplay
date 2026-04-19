@@ -3,7 +3,7 @@
 
 Start Develop own OpenRemise Display
 
-<a href="images/display/IMG_20260419_114529.jpg"><img src="images/display/IMG_20260419_114529.jpg" width="300" alt=""></a>
+<a href="images/display/IMG_20260419_114529.jpg"><img src="images/display/IMG_20260419_114529.jpg" width="500" alt=""></a>
 
 ### Used Hardware
 
@@ -44,7 +44,7 @@ Start Develop own OpenRemise Display
   </tr>
 </table>
 
-### Extended Data
+## Extended Data
 
 <table>
   <tr>
