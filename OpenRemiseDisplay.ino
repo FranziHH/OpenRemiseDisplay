@@ -58,6 +58,7 @@ void loop()
       
       display.nextView();
       updateNeeded = true;
+      lastViewChange = millis();
     }
 
     if (btnAction.isPressed())
