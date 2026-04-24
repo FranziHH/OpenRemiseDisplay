@@ -6,7 +6,7 @@
 
 ### Compact Version with 1.3" Display
 
-<a href="images/display/IMG_20260419_184033.jpg"><img src="images/display/IMG_20260419_184033.jpg" width="500" alt=""></a>
+<a href="images/display/IMG_20260424_202140.jpg"><img src="images/display/IMG_20260424_202140.jpg" width="500" alt=""></a>
 
 The two reset buttons are connected here to reset the display synchronously.
 
