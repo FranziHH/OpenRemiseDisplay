@@ -20,6 +20,9 @@ The two reset buttons are connected here to reset the display synchronously.
 
 ### Hardware Connection
 
+<a href="images/display/connection_schema.png"><img src="images/display/connection_schema.png" width="500" alt=""></a>
+
+
     OLED VCC -> C3 3.3V
     OLED GND -> C3 GND
     OLED SDA -> C3 GPIO 8
