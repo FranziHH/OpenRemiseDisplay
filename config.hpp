@@ -14,7 +14,7 @@
 
 // I2C Pins für den ESP32-C3
 // GPIO 8 und 9 sind Standard, aber hier kannst du sie jederzeit ändern
-#define OLED_SDA 8
+#define OLED_SDA 2  // 8
 #define OLED_SCL 9
 
 // Display Reset Pin (falls dein 2.4" einen hat, sonst auf -1 lassen)

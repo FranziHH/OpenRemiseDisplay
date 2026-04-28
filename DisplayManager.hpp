@@ -38,7 +38,7 @@ public:
     bool modal = true;
     bool dataTimeout = false;   // no Data
     DisplayManager();
-    void begin();
+    void begin(int sda, int scl);
     void nextView();
     void drawImage(const unsigned char* bitmap, int w, int h);
     void showMessage(const char *title, const char *line1, const char *line2);

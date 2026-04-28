@@ -41,7 +41,7 @@ void setup()
   btnNext.begin();
   btnAction.begin();
 
-  display.begin();
+  display.begin(OLED_SDA, OLED_SCL);
   display.showMessage("", "Booting", "waiting for data ...");  // Show Logo
 }
 

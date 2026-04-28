@@ -1,4 +1,5 @@
 #include "DisplayManager.hpp"
+#include <Wire.h>
 
 /*
 ToDo: Data
@@ -13,8 +14,9 @@ ToDo: Data
 
 DisplayManager::DisplayManager() : _u8g2(U8G2_R0, OLED_RST) {}
 
-void DisplayManager::begin()
+void DisplayManager::begin(int sda, int scl)
 {
+    Wire.begin(sda, scl); 
     _u8g2.begin();
     _u8g2.enableUTF8Print();
 }
