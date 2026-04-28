@@ -17,6 +17,8 @@ The two reset buttons are connected here to reset the display synchronously.
     - SSD1306
     - SH1106
     - SSD1309
+- optional: W5500 SPI Ethernet Module - TCP/IP, compatible with WIZ820io 
+
 
 ### Hardware Connection
 
