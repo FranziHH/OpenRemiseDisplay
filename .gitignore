@@ -1,4 +1,4 @@
 .pio
 .vscode/
-config.h
-config.h_*
+config.hpp
+config.hpp_*

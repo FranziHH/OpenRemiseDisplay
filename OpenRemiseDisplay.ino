@@ -3,7 +3,11 @@
  **************************************************************************************/
 
 #include <Arduino.h>
-#include "config.hpp"
+#if __has_include("config.hpp")
+    #include "config.hpp"
+#else
+    #error "ERROR: 'config.hpp' is missing! Please copy 'config.hpp.example' to 'config.hpp' and enter your data."
+#endif
 #include "Button.hpp"
 #include "DisplayManager.hpp"
 #include "DataManager.hpp"
@@ -41,8 +45,8 @@ void setup()
   btnNext.begin();
   btnAction.begin();
 
-  display.begin(OLED_SDA, OLED_SCL);
-  display.showMessage("", "Booting", "waiting for data ...");  // Show Logo
+  display.begin(OLED_SDA, OLED_SCL, OLED_RST, OLED_I2C_ADDR, OLED_TYPE);
+  display.showMessage("", "Booting", "waiting for data ...");
 }
 
 void loop()

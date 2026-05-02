@@ -12,13 +12,35 @@ ToDo: Data
 #define JSON_ERROR_CODE     "error_code"        // Error code
 */
 
-DisplayManager::DisplayManager() : _u8g2(U8G2_R0, OLED_RST) {}
+DisplayManager::DisplayManager() : _u8g2(nullptr) {}
+DisplayManager::~DisplayManager() { if (_u8g2) delete _u8g2; }
 
-void DisplayManager::begin(int sda, int scl)
+void DisplayManager::begin(int sda, int scl, int reset, int addr, DisplayType type)
 {
-    Wire.begin(sda, scl); 
-    _u8g2.begin();
-    _u8g2.enableUTF8Print();
+    Wire.begin(sda, scl);
+
+    if (_u8g2) delete _u8g2;
+
+    switch (type)
+    {
+    case DisplayType::SH1106:
+        _u8g2 = new U8G2_SH1106_128X64_NONAME_F_HW_I2C(U8G2_R0, reset);
+        break;
+    case DisplayType::SSD1309:
+        _u8g2 = new U8G2_SSD1309_128X64_NONAME0_F_HW_I2C(U8G2_R0, reset);
+        break;
+    case DisplayType::SSD1306:
+    default:
+        _u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, reset);
+        break;
+    }
+
+    if (_u8g2)
+    {
+        _u8g2->setI2CAddress(addr * 2);
+        _u8g2->begin();
+        _u8g2->enableUTF8Print();
+    }
 }
 
 void DisplayManager::nextView()
@@ -32,66 +54,66 @@ void DisplayManager::nextView()
 
 void DisplayManager::drawHeader(const char *title)
 {
-    _u8g2.setFont(u8g2_font_6x12_tf);
-    _u8g2.setCursor(0, 10);
-    _u8g2.print(title);
+    _u8g2->setFont(u8g2_font_6x12_tf);
+    _u8g2->setCursor(0, 10);
+    _u8g2->print(title);
 
-    _u8g2.drawHLine(0, 13, SCREEN_WIDTH);
+    _u8g2->drawHLine(0, 13, _screenWidth);
 }
 
 void DisplayManager::drawHeader(const char *title, float temp)
 {
-    _u8g2.setFont(u8g2_font_6x12_tf);
-    _u8g2.setCursor(0, 10);
-    _u8g2.print(title);
+    _u8g2->setFont(u8g2_font_6x12_tf);
+    _u8g2->setCursor(0, 10);
+    _u8g2->print(title);
 
     // Temperatur rechtsbündig (bei 128px Breite)
     if (temp != 0.0f)
     { // Nur zeichnen, wenn ein Wert vorliegt
         char tempBuf[10];
         snprintf(tempBuf, sizeof(tempBuf), "%.0f°C", temp);
-        uint16_t width = _u8g2.getStrWidth(tempBuf);
-        _u8g2.setCursor(128 - width, 10);
-        _u8g2.print(tempBuf);
+        uint16_t width = _u8g2->getStrWidth(tempBuf);
+        _u8g2->setCursor(128 - width, 10);
+        _u8g2->print(tempBuf);
     }
 
-    _u8g2.drawHLine(0, 13, SCREEN_WIDTH);
+    _u8g2->drawHLine(0, 13, _screenWidth);
 }
 
 void DisplayManager::showMessage(const char *title, const char *line1, const char *line2)
 {
-    _u8g2.clearBuffer();
-    _u8g2.setFont(u8g2_font_6x12_tf);
+    _u8g2->clearBuffer();
+    _u8g2->setFont(u8g2_font_6x12_tf);
 
     if (title == "")
     {
-        _u8g2.drawXBMP(12, 5, 103, 21, openeremise_logo_103_21);
+        _u8g2->drawXBMP(12, 5, 103, 21, openeremise_logo_103_21);
     }
     else
     {
-        int x = (128 - _u8g2.getStrWidth(title)) / 2;
-        _u8g2.drawUTF8(x, 40, title);
+        int x = (128 - _u8g2->getStrWidth(title)) / 2;
+        _u8g2->drawUTF8(x, 40, title);
     }
 
     if (line1 != "")
     {
 
-        int x = (128 - _u8g2.getStrWidth(line1)) / 2;
-        _u8g2.drawUTF8(x, 40, line1);
+        int x = (128 - _u8g2->getStrWidth(line1)) / 2;
+        _u8g2->drawUTF8(x, 40, line1);
     }
 
     if (line2 != "")
     {
-        int x = (128 - _u8g2.getStrWidth(line2)) / 2;
-        _u8g2.drawUTF8(x, 57, line2);
+        int x = (128 - _u8g2->getStrWidth(line2)) / 2;
+        _u8g2->drawUTF8(x, 57, line2);
     }
 
-    _u8g2.sendBuffer();
+    _u8g2->sendBuffer();
 }
 
 void DisplayManager::showOverview(const JsonDocument &data)
 {
-    _u8g2.clearBuffer();
+    _u8g2->clearBuffer();
 
     if (data.containsKey("temperature"))
     {
@@ -103,30 +125,30 @@ void DisplayManager::showOverview(const JsonDocument &data)
         drawHeader("SYSTEM"); // SCREEN_MAIN Titel
     }
 
-    _u8g2.setFont(u8g2_font_helvR08_tf);
+    _u8g2->setFont(u8g2_font_helvR08_tf);
 
-    _u8g2.drawUTF8(0, 25, "Voltage:");
-    _u8g2.setCursor(50, 25);
-    _u8g2.printf("%.2f V", (data["voltage"] | 0) / 1000.0);
+    _u8g2->drawUTF8(0, 25, "Voltage:");
+    _u8g2->setCursor(50, 25);
+    _u8g2->printf("%.2f V", (data["voltage"] | 0) / 1000.0);
 
-    _u8g2.drawUTF8(0, 37, "Current:");
-    _u8g2.setCursor(50, 37);
-    _u8g2.printf("%d mA", data["current"] | 0);
+    _u8g2->drawUTF8(0, 37, "Current:");
+    _u8g2->setCursor(50, 37);
+    _u8g2->printf("%d mA", data["current"] | 0);
 
-    _u8g2.drawUTF8(0, 49, "State:");
-    _u8g2.drawUTF8(50, 49, data["state"] | "---");
+    _u8g2->drawUTF8(0, 49, "State:");
+    _u8g2->drawUTF8(50, 49, data["state"] | "---");
 
-    _u8g2.drawUTF8(0, 61, "Version:");
-    _u8g2.drawUTF8(50, 61, data["version"] | "x.x.x");
+    _u8g2->drawUTF8(0, 61, "Version:");
+    _u8g2->drawUTF8(50, 61, data["version"] | "x.x.x");
 
-    _u8g2.sendBuffer();
+    _u8g2->sendBuffer();
 }
 
 void DisplayManager::showNetworkStatus(const JsonDocument &data)
 {
 
     bool eth = false;
-    _u8g2.clearBuffer();
+    _u8g2->clearBuffer();
 
     if (data.containsKey("wifi_status"))
     {
@@ -167,45 +189,45 @@ void DisplayManager::showNetworkStatus(const JsonDocument &data)
             eth = true;
     }
 
-    _u8g2.setFont(u8g2_font_helvR08_tf);
+    _u8g2->setFont(u8g2_font_helvR08_tf);
 
-    _u8g2.drawUTF8(0, 25, "IP:");
-    _u8g2.drawUTF8(35, 25, data["ip"] | "0.0.0.0");
+    _u8g2->drawUTF8(0, 25, "IP:");
+    _u8g2->drawUTF8(35, 25, data["ip"] | "0.0.0.0");
 
-    _u8g2.drawUTF8(0, 37, "mDNS:");
+    _u8g2->drawUTF8(0, 37, "mDNS:");
     String mdnsName = data["mdns"] | "---";
     if (mdnsName != "---" && mdnsName != "")
         mdnsName += ".local";
-    _u8g2.drawUTF8(35, 37, mdnsName.c_str());
+    _u8g2->drawUTF8(35, 37, mdnsName.c_str());
 
     if (!eth)
     {
-        _u8g2.drawUTF8(0, 49, "SSID:");
-        _u8g2.drawUTF8(35, 49, data["ssid"] | "---");
+        _u8g2->drawUTF8(0, 49, "SSID:");
+        _u8g2->drawUTF8(35, 49, data["ssid"] | "---");
 
-        _u8g2.drawUTF8(0, 61, "RSSI:");
-        _u8g2.setCursor(35, 61);
-        _u8g2.printf("%d dBm", data["rssi"] | 0);
+        _u8g2->drawUTF8(0, 61, "RSSI:");
+        _u8g2->setCursor(35, 61);
+        _u8g2->printf("%d dBm", data["rssi"] | 0);
     }
 
-    _u8g2.sendBuffer();
+    _u8g2->sendBuffer();
 }
 
 void DisplayManager::showError(const JsonDocument &data)
 {
-    _u8g2.clearBuffer();
+    _u8g2->clearBuffer();
 
     drawHeader("ERROR");
 
-    _u8g2.setFont(u8g2_font_helvR08_tf);
-    _u8g2.drawUTF8(0, 28, "CODE:");
-    _u8g2.setCursor(50, 28);
-    _u8g2.print(data["error_code"] | 0);
+    _u8g2->setFont(u8g2_font_helvR08_tf);
+    _u8g2->drawUTF8(0, 28, "CODE:");
+    _u8g2->setCursor(50, 28);
+    _u8g2->print(data["error_code"] | 0);
 
-    _u8g2.drawUTF8(0, 45, "INFO:");
-    _u8g2.drawUTF8(0, 57, data["error_msg"] | "Unknown error");
+    _u8g2->drawUTF8(0, 45, "INFO:");
+    _u8g2->drawUTF8(0, 57, data["error_msg"] | "Unknown error");
 
-    _u8g2.sendBuffer();
+    _u8g2->sendBuffer();
 }
 
 /*
@@ -217,15 +239,15 @@ Zeit überschrieben werden dürfen
 void DisplayManager::draw(const JsonDocument &data)
 {
     // im Moment 5 Sekunden fix
-    if (millis() - lastModalTimeOut < MODAL_TIMEOUT) return;
+    if (millis() - _lastModalTimeOut < _modalTimeOut) return;
 
-    _u8g2.clearBuffer();
+    _u8g2->clearBuffer();
     modal = false;
 
     if (data.containsKey("error_msg"))
     {
         showError(data);
-        lastModalTimeOut = millis();
+        _lastModalTimeOut = millis();
         modal = true;
         return;
     }
@@ -240,7 +262,7 @@ void DisplayManager::draw(const JsonDocument &data)
     if (dataTimeout)
     {
         showMessage("", "Data Connection Lost", "waiting for data ...");   // show logo
-        lastModalTimeOut = millis();
+        _lastModalTimeOut = millis();
         modal = true;
         return;
     }
@@ -250,7 +272,7 @@ void DisplayManager::draw(const JsonDocument &data)
         bool restart = data["is_restarting"].as<bool>();
         if (restart) {
             showMessage("", "Restart", "");   // show logo
-            lastModalTimeOut = millis();
+            _lastModalTimeOut = millis();
             modal = true;
             return;
         }
@@ -301,10 +323,10 @@ void DisplayManager::draw(const JsonDocument &data)
 void DisplayManager::drawImage(const unsigned char *bitmap, int w, int h)
 {
     // Automatische Zentrierung
-    int x = (SCREEN_WIDTH - w) / 2;
-    int y = (SCREEN_HEIGHT - h) / 2;
+    int x = (_screenWidth - w) / 2;
+    int y = (_screenHeight - h) / 2;
 
-    _u8g2.clearBuffer();
-    _u8g2.drawXBMP(x, y, w, h, bitmap);
-    _u8g2.sendBuffer();
+    _u8g2->clearBuffer();
+    _u8g2->drawXBMP(x, y, w, h, bitmap);
+    _u8g2->sendBuffer();
 }

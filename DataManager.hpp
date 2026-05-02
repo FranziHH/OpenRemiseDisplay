@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ArduinoJson.h>
-#include "config.hpp"
 
 class DataManager {
 private:
