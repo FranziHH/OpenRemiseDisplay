@@ -45,7 +45,11 @@ void setup()
   btnNext.begin();
   btnAction.begin();
 
-  display.begin(OLED_SDA, OLED_SCL, OLED_RST, OLED_I2C_ADDR, OLED_TYPE);
+  #ifndef LED_TRACK_POWER
+    #define LED_TRACK_POWER 0
+  #endif
+  display.init(OLED_SDA, OLED_SCL, OLED_RST, OLED_I2C_ADDR, OLED_TYPE, LED_TRACK_POWER);
+  display.begin();
   display.showMessage("", "Booting", "waiting for data ...");
 }
 

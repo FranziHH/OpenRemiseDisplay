@@ -15,31 +15,54 @@ ToDo: Data
 DisplayManager::DisplayManager() : _u8g2(nullptr) {}
 DisplayManager::~DisplayManager() { if (_u8g2) delete _u8g2; }
 
-void DisplayManager::begin(int sda, int scl, int reset, int addr, DisplayType type)
+void DisplayManager::init(int sda, int scl, int reset, int addr, DisplayType type, int trackLED)
 {
-    Wire.begin(sda, scl);
+    _sda = sda;
+    _scl = scl;
+    _reset = reset;
+    _addr = addr;
+    _type = type;
+    _trackLED = trackLED;
+    if (trackLED != 0) {
+        _isTrackLED = true;
+        if (trackLED == 8) {
+            // internal LED is inverted
+            _trackLedOn = LOW;
+            _trackLedOff = HIGH;
+        }
+    }
+}
+
+void DisplayManager::begin()
+{
+    Wire.begin(_sda, _scl);
 
     if (_u8g2) delete _u8g2;
 
-    switch (type)
+    switch (_type)
     {
     case DisplayType::SH1106:
-        _u8g2 = new U8G2_SH1106_128X64_NONAME_F_HW_I2C(U8G2_R0, reset);
+        _u8g2 = new U8G2_SH1106_128X64_NONAME_F_HW_I2C(U8G2_R0, _reset);
         break;
     case DisplayType::SSD1309:
-        _u8g2 = new U8G2_SSD1309_128X64_NONAME0_F_HW_I2C(U8G2_R0, reset);
+        _u8g2 = new U8G2_SSD1309_128X64_NONAME0_F_HW_I2C(U8G2_R0, _reset);
         break;
     case DisplayType::SSD1306:
     default:
-        _u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, reset);
+        _u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, _reset);
         break;
     }
 
     if (_u8g2)
     {
-        _u8g2->setI2CAddress(addr * 2);
+        _u8g2->setI2CAddress(_addr * 2);
         _u8g2->begin();
         _u8g2->enableUTF8Print();
+    }
+    if (_isTrackLED)
+    {
+        pinMode(_trackLED, OUTPUT);
+        digitalWrite(_trackLED, _trackLedOff);
     }
 }
 
@@ -243,6 +266,15 @@ void DisplayManager::draw(const JsonDocument &data)
 
     _u8g2->clearBuffer();
     modal = false;
+
+    if (_isTrackLED && data.containsKey("state")) {
+        String stateValue = data["state"] | "";
+        if (stateValue.equalsIgnoreCase("dccoperations")) {
+            digitalWrite(_trackLED, _trackLedOn);
+        } else {
+            digitalWrite(_trackLED, _trackLedOff);
+        }
+    }
 
     if (data.containsKey("error_msg"))
     {

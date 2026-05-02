@@ -7,6 +7,13 @@
 #define MAX_VIEWS 2
 
 class DisplayManager {
+public:
+    enum class DisplayType {
+        SSD1306,
+        SH1106,
+        SSD1309
+    };
+
 private:
     enum class wifi_status : uint8_t {
         DISCONNECTED,
@@ -20,6 +27,15 @@ private:
     unsigned long _modalTimeOut = 10000;
     int _screenWidth = 128;
     int _screenHeight = 64;
+    int _sda;
+    int _scl;
+    int _reset; 
+    int _addr;
+    DisplayType _type;
+    int _trackLED;
+    bool _isTrackLED = false;
+    int _trackLedOn = HIGH;
+    int _trackLedOff = LOW;
 
     U8G2* _u8g2 = nullptr;
 
@@ -30,16 +46,12 @@ private:
     void showNetworkStatus(const JsonDocument& data);
 
 public:
-    enum class DisplayType {
-        SSD1306,
-        SH1106,
-        SSD1309
-    };
     bool modal = true;
     bool dataTimeout = false;   // no Data
     DisplayManager();
     ~DisplayManager();
-    void begin(int sda, int scl, int reset, int addr, DisplayType type);
+    void init(int sda, int scl, int reset, int addr, DisplayType type, int trackLED = 0);
+    void begin();
     void nextView();
     void drawImage(const unsigned char* bitmap, int w, int h);
     void showMessage(const char *title, const char *line1, const char *line2);

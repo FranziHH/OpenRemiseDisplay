@@ -1,5 +1,9 @@
 # Use ESP32-C3-Super-Mini as OpenRemise Display
 
+### Changes
+
+Optionally, the internal blue LED (GPIO8) is used as an indicator for the track voltage.
+
 ### With a large 2.4" Display 
 
 <a href="images/display/IMG_20260419_114529.jpg"><img src="images/display/IMG_20260419_114529.jpg" width="500" alt=""></a>

@@ -13,7 +13,8 @@
 
 // I2C Pins für den ESP32-C3
 // GPIO 8 und 9 sind Standard, aber hier kannst du sie jederzeit ändern
-#define OLED_SDA 2  // 8
+// auf GPIO 8 liegt die blaue LED und blinkt bei anliegendem SDA Signal
+#define OLED_SDA 2  // 8 -> wird für Anzeige Track Power "missbraucht"
 #define OLED_SCL 9
 
 // Display Reset Pin (falls dein 2.4" einen hat, sonst auf -1 lassen)
@@ -21,6 +22,10 @@
 
 // I2C Adresse des Displays
 #define OLED_I2C_ADDR 0x3C
+
+#if OLED_SDA != 8
+    #define LED_TRACK_POWER 8
+#endif
 
 // Serielle Schnittstelle
 #define MONITOR_SPEED 115200
