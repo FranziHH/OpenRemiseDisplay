@@ -303,6 +303,7 @@ void DisplayManager::draw(const JsonDocument &data)
     {
         bool restart = data["is_restarting"].as<bool>();
         if (restart) {
+            if (_isTrackLED ) digitalWrite(_trackLED, _trackLedOff);
             showMessage("", "Restart", "");   // show logo
             _lastModalTimeOut = millis();
             modal = true;
