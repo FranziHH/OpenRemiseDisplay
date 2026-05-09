@@ -13,7 +13,11 @@ ToDo: Data
 */
 
 DisplayManager::DisplayManager() : _u8g2(nullptr) {}
-DisplayManager::~DisplayManager() { if (_u8g2) delete _u8g2; }
+DisplayManager::~DisplayManager()
+{
+    if (_u8g2)
+        delete _u8g2;
+}
 
 void DisplayManager::init(int sda, int scl, int reset, int addr, DisplayType type, int trackLED)
 {
@@ -23,9 +27,11 @@ void DisplayManager::init(int sda, int scl, int reset, int addr, DisplayType typ
     _addr = addr;
     _type = type;
     _trackLED = trackLED;
-    if (trackLED != 0) {
+    if (trackLED != 0)
+    {
         _isTrackLED = true;
-        if (trackLED == 8) {
+        if (trackLED == 8)
+        {
             // internal LED is inverted
             _trackLedOn = LOW;
             _trackLedOff = HIGH;
@@ -37,7 +43,8 @@ void DisplayManager::begin()
 {
     Wire.begin(_sda, _scl);
 
-    if (_u8g2) delete _u8g2;
+    if (_u8g2)
+        delete _u8g2;
 
     switch (_type)
     {
@@ -84,12 +91,17 @@ void DisplayManager::drawHeader(const char *title)
     _u8g2->drawHLine(0, 13, _screenWidth);
 }
 
-void DisplayManager::drawHeader(const char *title, float temp)
+void DisplayManager::drawHeader(const char *title, const char *hwrev, float temp)
 {
     _u8g2->setFont(u8g2_font_6x12_tf);
     _u8g2->setCursor(0, 10);
     _u8g2->print(title);
 
+    if (hwrev != "") {
+        _u8g2->setCursor(50, 10);
+        _u8g2->print(hwrev);
+    }
+    
     // Temperatur rechtsbündig (bei 128px Breite)
     if (temp != 0.0f)
     { // Nur zeichnen, wenn ein Wert vorliegt
@@ -137,11 +149,23 @@ void DisplayManager::showMessage(const char *title, const char *line1, const cha
 void DisplayManager::showOverview(const JsonDocument &data)
 {
     _u8g2->clearBuffer();
+    bool legacy = true;
+
+    if (data.containsKey("legacy"))
+    {
+        legacy = data["legacy"].as<bool>();
+    }
 
     if (data.containsKey("temperature"))
-    {
+    {   
+        String revision = "";
+        if (data.containsKey("revision")) {
+            revision = data["revision"] | "";
+            // if (revision != "") revision = "hw:" + revision;
+        }
+        
         float currentTemp = data["temperature"] | 0.0f;
-        drawHeader("SYSTEM", currentTemp);
+        drawHeader("SYSTEM", revision.c_str(), currentTemp);
     }
     else
     {
@@ -150,9 +174,30 @@ void DisplayManager::showOverview(const JsonDocument &data)
 
     _u8g2->setFont(u8g2_font_helvR08_tf);
 
-    _u8g2->drawUTF8(0, 25, "Voltage:");
-    _u8g2->setCursor(50, 25);
-    _u8g2->printf("%.2f V", (data["voltage"] | 0) / 1000.0);
+    if (data.containsKey("voltage"))
+    {
+        _u8g2->drawUTF8(0, 25, "Voltage:");
+        _u8g2->setCursor(50, 25);
+        _u8g2->printf("%.2f V", (data["voltage"] | 0) / 1000.0);
+    }
+    else if (data.containsKey("vcc_voltage") && data.containsKey("supply_voltage"))
+    {
+        _u8g2->drawUTF8(0, 25, "Voltage:");
+        _u8g2->setCursor(50, 25);
+
+        // Beide Werte kompakt in einer Zeile ausgeben
+        float vcc = (data["vcc_voltage"] | 0) / 1000.0;
+        float supply = (data["supply_voltage"] | 0) / 1000.0;
+
+        if (legacy)
+        {
+            _u8g2->printf("%.1fV", vcc);
+        }
+        else
+        {
+            _u8g2->printf("%.1fV / %.1fV", vcc, supply);
+        }
+    }
 
     _u8g2->drawUTF8(0, 37, "Current:");
     _u8g2->setCursor(50, 37);
@@ -262,16 +307,21 @@ Zeit überschrieben werden dürfen
 void DisplayManager::draw(const JsonDocument &data)
 {
     // im Moment 5 Sekunden fix
-    if (millis() - _lastModalTimeOut < _modalTimeOut) return;
+    if (millis() - _lastModalTimeOut < _modalTimeOut)
+        return;
 
     _u8g2->clearBuffer();
     modal = false;
 
-    if (_isTrackLED && data.containsKey("state")) {
+    if (_isTrackLED && data.containsKey("state"))
+    {
         String stateValue = data["state"] | "";
-        if (stateValue.equalsIgnoreCase("dccoperations")) {
+        if (stateValue.equalsIgnoreCase("dccoperations"))
+        {
             digitalWrite(_trackLED, _trackLedOn);
-        } else {
+        }
+        else
+        {
             digitalWrite(_trackLED, _trackLedOff);
         }
     }
@@ -283,17 +333,17 @@ void DisplayManager::draw(const JsonDocument &data)
         modal = true;
         return;
     }
-    
-    /* 
+
+    /*
     // idee war den Reset Button abzufangen,
     // das fkt aber nicht wie gewünscht
-    bool isMissingData = (data["ip"].isNull() || data["ip"] == "") && 
+    bool isMissingData = (data["ip"].isNull() || data["ip"] == "") &&
                          (data["mdns"].isNull() || data["mdns"] == "");
     if (dataTimeout || isMissingData)
     */
     if (dataTimeout)
     {
-        showMessage("", "Data Connection Lost", "waiting for data ...");   // show logo
+        showMessage("", "Data Connection Lost", "waiting for data ..."); // show logo
         _lastModalTimeOut = millis();
         modal = true;
         return;
@@ -302,9 +352,11 @@ void DisplayManager::draw(const JsonDocument &data)
     if (data.containsKey("is_restarting"))
     {
         bool restart = data["is_restarting"].as<bool>();
-        if (restart) {
-            if (_isTrackLED ) digitalWrite(_trackLED, _trackLedOff);
-            showMessage("", "Restart", "");   // show logo
+        if (restart)
+        {
+            if (_isTrackLED)
+                digitalWrite(_trackLED, _trackLedOff);
+            showMessage("", "Restart", ""); // show logo
             _lastModalTimeOut = millis();
             modal = true;
             return;
@@ -319,14 +371,14 @@ void DisplayManager::draw(const JsonDocument &data)
         if (status == wifi_status::AP_ACTIVE)
         {
             // Logik für Access Point
-            showMessage("", "Access Point", "is Active");   // show logo
+            showMessage("", "Access Point", "is Active"); // show logo
             modal = true;
             return;
         }
         else if (status == wifi_status::AP_CONNECTED)
         {
             // Logik für Access Point
-            showMessage("", "Access Point", "Client connected");   // show logo
+            showMessage("", "Access Point", "Client connected"); // show logo
             modal = true;
             return;
         }

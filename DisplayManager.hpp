@@ -40,8 +40,8 @@ private:
     U8G2* _u8g2 = nullptr;
 
     // Private Zeichen-Methoden (Interne Helfer)
-    void drawHeader(const char* viewName);
-    void drawHeader(const char* viewName, float temp);
+    void drawHeader(const char* title);
+    void drawHeader(const char* title, const char *hwrev, float temp);
     void showOverview(const JsonDocument& data);
     void showNetworkStatus(const JsonDocument& data);
 
