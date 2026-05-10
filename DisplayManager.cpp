@@ -151,17 +151,13 @@ void DisplayManager::showOverview(const JsonDocument &data)
     _u8g2->clearBuffer();
     bool legacy = true;
 
-    if (data.containsKey("legacy"))
-    {
-        legacy = data["legacy"].as<bool>();
-    }
-
     if (data.containsKey("temperature"))
     {   
         String revision = "";
         if (data.containsKey("revision")) {
             revision = data["revision"] | "";
             // if (revision != "") revision = "hw:" + revision;
+            if (revision != "0.1.0") legacy = false;
         }
         
         float currentTemp = data["temperature"] | 0.0f;
@@ -191,11 +187,11 @@ void DisplayManager::showOverview(const JsonDocument &data)
 
         if (legacy)
         {
-            _u8g2->printf("%.1fV", vcc);
+            _u8g2->printf("%.2fV", supply);
         }
         else
         {
-            _u8g2->printf("%.1fV / %.1fV", vcc, supply);
+            _u8g2->printf("%.2fV / %.2fV", supply, vcc);
         }
     }
 
