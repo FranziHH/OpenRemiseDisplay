@@ -4,6 +4,17 @@
 
 Optionally, the internal blue LED (GPIO8) is used as an indicator for the track voltage.
 
+## Upgrade OpenRemise Hardware Rev 0.1.0 => 0.1.2
+
+Two resistors and some soldering skills are required:
+- 1 x 14.3 kΩ
+- 1 x 470 Ω
+
+See image for connections.
+
+<a href="images/IMG_20260510_123416_001.jpg"><img src="images/IMG_20260510_123416_001.jpg" width="500" alt=""></a>   
+
+
 ### With a large 2.4" Display 
 
 <a href="images/display/IMG_20260419_114529.jpg"><img src="images/display/IMG_20260419_114529.jpg" width="500" alt=""></a>
