@@ -14,6 +14,8 @@ See image for connections.
 
 <a href="images/IMG_20260510_123416_001.jpg"><img src="images/IMG_20260510_123416_001.jpg" width="500" alt=""></a>   
 
+<a href="images/2026-05-10_15-49-15.png"><img src="images/2026-05-10_15-49-15.png" width="500" alt=""></a>   
+
 
 ### With a large 2.4" Display 
 
