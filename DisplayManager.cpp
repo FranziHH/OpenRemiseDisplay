@@ -105,10 +105,11 @@ void DisplayManager::drawHeader(const char *title, const char *hwrev, float temp
     // Temperatur rechtsbündig (bei 128px Breite)
     if (temp != 0.0f)
     { // Nur zeichnen, wenn ein Wert vorliegt
+        uint16_t offset = 5;
         char tempBuf[10];
         snprintf(tempBuf, sizeof(tempBuf), "%.0f°C", temp);
         uint16_t width = _u8g2->getStrWidth(tempBuf);
-        _u8g2->setCursor(128 - width, 10);
+        _u8g2->setCursor(128 - width + offset, 10);
         _u8g2->print(tempBuf);
     }
 
@@ -161,7 +162,7 @@ void DisplayManager::showOverview(const JsonDocument &data)
         }
         
         float currentTemp = data["temperature"] | 0.0f;
-        drawHeader("SYSTEM", revision.c_str(), currentTemp);
+        drawHeader("SYSTEM:", revision.c_str(), currentTemp);
     }
     else
     {
