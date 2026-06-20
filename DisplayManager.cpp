@@ -174,13 +174,13 @@ void DisplayManager::showOverview(const JsonDocument &data)
     if (data.containsKey("voltage"))
     {
         _u8g2->drawUTF8(0, 25, "Voltage:");
-        _u8g2->setCursor(50, 25);
+        _u8g2->setCursor(40, 25);
         _u8g2->printf("%.2f V", (data["voltage"] | 0) / 1000.0);
     }
     else if (data.containsKey("vcc_voltage") && data.containsKey("supply_voltage"))
     {
         _u8g2->drawUTF8(0, 25, "Voltage:");
-        _u8g2->setCursor(50, 25);
+        _u8g2->setCursor(40, 25);
 
         // Beide Werte kompakt in einer Zeile ausgeben
         float vcc = (data["vcc_voltage"] | 0) / 1000.0;
@@ -197,14 +197,37 @@ void DisplayManager::showOverview(const JsonDocument &data)
     }
 
     _u8g2->drawUTF8(0, 37, "Current:");
-    _u8g2->setCursor(50, 37);
+    _u8g2->setCursor(40, 37);
     _u8g2->printf("%d mA", data["current"] | 0);
 
     _u8g2->drawUTF8(0, 49, "State:");
-    _u8g2->drawUTF8(50, 49, data["state"] | "---");
+    _u8g2->drawUTF8(40, 49, data["state"] | "---");
 
     _u8g2->drawUTF8(0, 61, "Version:");
-    _u8g2->drawUTF8(50, 61, data["version"] | "x.x.x");
+    if (strcmp(data["version"] | "", "debug") != 0 && data.containsKey("compile_date")) {
+        char buffer[64];
+        char monthStr[4];
+        int day, year;
+        sscanf(data["compile_date"], "%3s %d %d", monthStr, &day, &year);
+        String v = data["version"] | "x.x.x";
+        v.replace(" FW", "FW");
+
+        int month = 0;
+        const char* months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        for(int i = 0; i < 12; i++) {
+            if(strcmp(monthStr, months[i]) == 0) {
+                month = i + 1;
+                break;
+            }
+        }
+
+        // String aus Version und Datum zusammenbauen
+        snprintf(buffer, sizeof(buffer), "%s, %02d-%02d-%02d", v.c_str(), year % 100, month, day);
+
+        _u8g2->drawUTF8(40, 61, buffer);
+    } else {
+        _u8g2->drawUTF8(40, 61, data["version"] | "x.x.x");
+    }
 
     _u8g2->sendBuffer();
 }
@@ -286,7 +309,7 @@ void DisplayManager::showError(const JsonDocument &data)
 
     _u8g2->setFont(u8g2_font_helvR08_tf);
     _u8g2->drawUTF8(0, 28, "CODE:");
-    _u8g2->setCursor(50, 28);
+    _u8g2->setCursor(40, 28);
     _u8g2->print(data["error_code"] | 0);
 
     _u8g2->drawUTF8(0, 45, "INFO:");
