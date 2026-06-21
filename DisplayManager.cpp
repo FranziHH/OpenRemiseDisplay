@@ -19,23 +19,17 @@ DisplayManager::~DisplayManager()
         delete _u8g2;
 }
 
-void DisplayManager::init(int sda, int scl, int reset, int addr, DisplayType type, int trackLED)
+void DisplayManager::init(int sda, int scl, int reset, int addr, DisplayType type, int statusLED)
 {
     _sda = sda;
     _scl = scl;
     _reset = reset;
     _addr = addr;
     _type = type;
-    _trackLED = trackLED;
-    if (trackLED != 0)
+    if (statusLED != 0)
     {
-        _isTrackLED = true;
-        if (trackLED == 8)
-        {
-            // internal LED is inverted
-            _trackLedOn = LOW;
-            _trackLedOff = HIGH;
-        }
+        _isStatusLED = true;
+        _statusLed = new LED(statusLED, statusLED == 8);
     }
 }
 
@@ -66,20 +60,13 @@ void DisplayManager::begin()
         _u8g2->begin();
         _u8g2->enableUTF8Print();
     }
-    if (_isTrackLED)
-    {
-        pinMode(_trackLED, OUTPUT);
-        digitalWrite(_trackLED, _trackLedOff);
-    }
+    if (_isStatusLED) _statusLed->off();
 }
 
 void DisplayManager::nextView()
 {
     _currentView++;
-    if (_currentView >= MAX_VIEWS)
-    {
-        _currentView = 0; // Zurück zum ersten Screen
-    }
+    if (_currentView >= MAX_VIEWS) _currentView = 0; // Zurück zum ersten Screen
 }
 
 void DisplayManager::drawHeader(const char *title)
@@ -333,17 +320,12 @@ void DisplayManager::draw(const JsonDocument &data)
     _u8g2->clearBuffer();
     modal = false;
 
-    if (_isTrackLED && data.containsKey("state"))
+    if (_isStatusLED && data.containsKey("state"))
     {
         String stateValue = data["state"] | "";
-        if (stateValue.equalsIgnoreCase("dccoperations"))
-        {
-            digitalWrite(_trackLED, _trackLedOn);
-        }
-        else
-        {
-            digitalWrite(_trackLED, _trackLedOff);
-        }
+        if (stateValue.equalsIgnoreCase("dccoperations")) _statusLed->on();
+        else if (stateValue.equalsIgnoreCase("ota")) _statusLed->blink(250, 250);
+        else  _statusLed->off();
     }
 
     if (data.containsKey("error_msg"))
@@ -354,13 +336,6 @@ void DisplayManager::draw(const JsonDocument &data)
         return;
     }
 
-    /*
-    // idee war den Reset Button abzufangen,
-    // das fkt aber nicht wie gewünscht
-    bool isMissingData = (data["ip"].isNull() || data["ip"] == "") &&
-                         (data["mdns"].isNull() || data["mdns"] == "");
-    if (dataTimeout || isMissingData)
-    */
     if (dataTimeout)
     {
         showMessage("", "Data Connection Lost", "waiting for data ..."); // show logo
@@ -374,8 +349,7 @@ void DisplayManager::draw(const JsonDocument &data)
         bool restart = data["is_restarting"].as<bool>();
         if (restart)
         {
-            if (_isTrackLED)
-                digitalWrite(_trackLED, _trackLedOff);
+            if (_isStatusLED) _statusLed->off();
             showMessage("", "Restart", ""); // show logo
             _lastModalTimeOut = millis();
             modal = true;

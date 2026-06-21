@@ -3,6 +3,7 @@
 #include <ArduinoJson.h>
 #include <U8g2lib.h>
 #include "Logo.hpp"
+#include "LED.hpp"
 
 #define MAX_VIEWS 2
 
@@ -32,10 +33,8 @@ private:
     int _reset; 
     int _addr;
     DisplayType _type;
-    int _trackLED;
-    bool _isTrackLED = false;
-    int _trackLedOn = HIGH;
-    int _trackLedOff = LOW;
+    LED* _statusLed = nullptr;
+    bool _isStatusLED = false;
 
     U8G2* _u8g2 = nullptr;
 
@@ -50,7 +49,7 @@ public:
     bool dataTimeout = false;   // no Data
     DisplayManager();
     ~DisplayManager();
-    void init(int sda, int scl, int reset, int addr, DisplayType type, int trackLED = 0);
+    void init(int sda, int scl, int reset, int addr, DisplayType type, int statusLED = 0);
     void begin();
     void nextView();
     void drawImage(const unsigned char* bitmap, int w, int h);
