@@ -11,10 +11,31 @@ Die hier aufgeführten Daten sind aus dem Code entnommen
     aktuelle IP Adresse
 - **state**
     Betriebsstatus
-    - suspended
-    - DCCOperations
-    - OTA
-    - ... (weitere sind nicht bekannt) 
+    ```
+    enum State {
+        // Flags (8 bits)
+        Suspended,
+        Suspending,
+        ShortCircuit,
+
+        // Outputs
+        DCCOperations,
+        DCCService,
+        DECUPZpp,
+        DECUPZsu,
+        MDUZpp,
+        MDUZsu,
+        ZUSI,
+
+        // USB protocols
+        ULF_DCC_EIN,
+        ULF_MDU_EIN,
+        ULF_SUSIV2,
+
+        // System
+        OTA,
+    }
+    ```
 - **ssid**
     WiFi SSID (bei LAN leer)
 - **mdns**

@@ -325,6 +325,10 @@ void DisplayManager::draw(const JsonDocument &data)
         String stateValue = data["state"] | "";
         if (stateValue.equalsIgnoreCase("dccoperations")) _statusLed->on();
         else if (stateValue.equalsIgnoreCase("ota")) _statusLed->blink(250, 250);
+        else if (stateValue.equalsIgnoreCase("DECUPZpp")) _statusLed->blink(500, 500);
+        else if (stateValue.equalsIgnoreCase("DECUPZsu")) _statusLed->blink(500, 500);
+        else if (stateValue.equalsIgnoreCase("MDUZpp")) _statusLed->blink(500, 500);
+        else if (stateValue.equalsIgnoreCase("MDUZsu")) _statusLed->blink(500, 500);
         else  _statusLed->off();
     }
 
