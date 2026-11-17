@@ -16,11 +16,23 @@ public:
     };
 
 private:
-    enum class wifi_status : uint8_t {
+/*     enum class wifi_status : uint8_t {
         DISCONNECTED,
         STA_CONNECTED,
         AP_ACTIVE,
         AP_CONNECTED
+    }; 
+*/
+
+    enum class wifi_status : uint8_t {
+        DISCONNECTED,
+        STA_DISCONNECTED,
+        STA_CONNECTED,
+        STA_GOT_IP,
+        STA_LOST_IP,
+        AP_DISCONNECTED,
+        AP_CONNECTED,
+        AP_ACTIVE,
     };
 
     int _currentView = 0;

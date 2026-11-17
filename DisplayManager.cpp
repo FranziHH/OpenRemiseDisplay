@@ -236,10 +236,20 @@ void DisplayManager::showNetworkStatus(const JsonDocument &data)
             // LAN
             drawHeader("LAN: Connected");
         }
-        else if (status == wifi_status::STA_CONNECTED)
+        else if (status == wifi_status::STA_CONNECTED || status == wifi_status::STA_GOT_IP)
         {
             // Logik für verbunden
             drawHeader("WiFi: Connected");
+        }
+        else if (status == wifi_status::STA_DISCONNECTED)
+        {
+            // Logik für WiFi
+            drawHeader("WiFi: Disconnected");
+        }
+        else if (status == wifi_status::STA_LOST_IP)
+        {
+            // Logik für WiFi
+            drawHeader("WiFi: Lost IP");
         }
         else if (status == wifi_status::AP_ACTIVE)
         {
@@ -251,10 +261,23 @@ void DisplayManager::showNetworkStatus(const JsonDocument &data)
             // Logik für Access Point
             drawHeader("AP: Connected");
         }
+        else if (status == wifi_status::AP_DISCONNECTED)
+        {
+            // Logik für Access Point
+            drawHeader("AP: Disconnected");
+        }
         else if (status == wifi_status::DISCONNECTED)
         {
             // Logik für getrennt
-            drawHeader("WiFi: Disconnected");
+            drawHeader("Disconnected");
+        }
+        else
+        {
+            // Logik für unbekannt
+            // drawHeader("WiFi: Unknown");
+            char buf[32];
+            snprintf(buf, sizeof(buf), "WiFi: %u", static_cast<uint8_t>(status));
+            drawHeader(buf);
         }
     }
     else
